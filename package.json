@@ -1,0 +1,19 @@
+{
+  "name": "kepler-il",
+  "version": "1.0.0",
+  "description": "kepler-li is a website that allows users to see the light intensity data for stars for a given time period.",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/renellc/kepler-il.git"
+  },
+  "author": "Renell Castro",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/renellc/kepler-il/issues"
+  },
+  "homepage": "https://github.com/renellc/kepler-il#readme"
+}
