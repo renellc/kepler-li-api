@@ -1,21 +1,24 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const db = require('../db/db');
+
+const router = express.Router();
+
+const pageLimit = 10;
 
 router.get('/', (req, res) => {
-    //let offset = Math.round(parseInt(req.query.offset) / 10) * 10;
-
-    // if (req.query.range || req.query.std) {
-    //     res.send(`Getting stars with an offset of ${offset} and with a ${req.query.range ? 'range' : 'standard deviation'} sort.`);
-    // } else {
-    //     res.send(`Getting stars.`);
-    // }
-
-    res.send(`Getting stars.`);
+  const offset = req.query.offset ? req.query.offset : 0;
+  db.getStars(pageLimit, offset, (err, data) => {
+    if (err) {
+      console.log(err);
+      res.setHeader('Content-Type', 'application/json');
+      res.status(404).send(JSON.parse({}));
+    }
+    res.send(data);
+  });
 });
 
 router.get('/:starId', (req, res) => {
-    res.send(`Requesting star data for star ${req.params.starId}`);
+  res.send(`Requesting star data for star ${req.params.starId}`);
 });
 
 module.exports = router;
-

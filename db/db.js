@@ -1,22 +1,29 @@
 const { Pool }  = require('pg');
-const pool = new Pool({
-  connectionString: process.env.NODE_ENV === 'PROD' ? process.env.DATABASE_URL : '',
-  ssl: true
-});
+const pool = process.env.NODE_ENV === 'PROD' ? 
+  new Pool({
+    connectionString: process.env.DATABASE_URL,
+    ssl: true
+  }) : 
+  new Pool({
+    user: 'admin',
+    host: 'localhost',
+    database: 'admin',
+    password: process.env.LOCAL_DB_PASS
+  });
 
 function getStars(limit, offset, getStarsHandler) {
   pool.connect().then(client => {
-    client.query(`SELECT * FROM Star LIMIT ${limit} OFFSET ${offset}`).then(results => {
+    client.query(`SELECT * FROM Star ORDER BY starId ASC LIMIT ${limit} OFFSET ${offset}`).then(results => {
       client.release();
-      getStarsHandler(results);
+      getStarsHandler(null, results);
     }).catch(queryErr => {
       client.release();
       console.log(queryErr);
-      getStarsHandler(null);
+      getStarsHandler(queryErr, null);
     });
   }).catch(connectErr => {
-    console.log(queryErr);
-    getStarsHandler(null);
+    console.log(connectErr);
+    getStarsHandler(connectErr, null);
   });
 }
 
@@ -31,15 +38,15 @@ function getStar(starId, getStarHandler) {
     LIMIT 1;
     `).then(results => {
       client.release();
-      getStarHandler(results);
+      getStarHandler(null, results);
     }).catch(queryErr => {
       client.release();
       console.log(queryErr);
-      getStarHandler(null);
+      getStarHandler(queryErr, null);
     });
   }).catch(connectErr => {
     console.log(connectErr);
-    getStarHandler(null);
+    getStarHandler(connectErr, null);
   });
 }
 
