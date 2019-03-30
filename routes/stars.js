@@ -18,7 +18,13 @@ router.get('/', (req, res) => {
 });
 
 router.get('/:starId', (req, res) => {
-  res.send(`Requesting star data for star ${req.params.starId}`);
+  db.getStar(req.param.starId, (err, data) => {
+    if (err) {
+      res.setHeader('Content-Type', 'application/json');
+      res.status(404).send(JSON.parse({}));
+    }
+    res.send(data);
+  });
 });
 
 module.exports = router;
