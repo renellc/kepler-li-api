@@ -15,7 +15,7 @@ function getStars(limit, offset, getStarsHandler) {
   pool.connect().then(client => {
     client.query(`SELECT * FROM Star ORDER BY starId ASC LIMIT ${limit} OFFSET ${offset}`).then(results => {
       client.release();
-      getStarsHandler(null, results);
+      getStarsHandler(null, results.rows);
     }).catch(queryErr => {
       client.release();
       console.log(queryErr);
@@ -43,7 +43,7 @@ function getStar(starId, getStarHandler) {
     LIMIT 1;
     `).then(results => {
       client.release();
-      getStarHandler(null, results);
+      getStarHandler(null, results.rows);
     }).catch(queryErr => {
       client.release();
       console.log(queryErr);
