@@ -18,10 +18,9 @@ router.get('/', (req, res) => {
 });
 
 router.get('/:starId', (req, res) => {
-  db.getStar(req.param.starId, (err, data) => {
-    if (err) {
-      res.setHeader('Content-Type', 'application/json');
-      res.status(404).send(JSON.parse({}));
+  db.getStar(req.params.starId, (err, data) => {
+    if (err || data.length === 0) {
+      res.status(404).send();
     }
     res.send(data);
   });

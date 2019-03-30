@@ -31,15 +31,17 @@ function getStar(starId, getStarHandler) {
   pool.connect().then(client => {
     client.query(`
     SELECT
-      S.starId,
+      S.starid,
       S.min,
       S.max,
       S.std,
-      S.hasPossibleExoplanets,
+      S.haspossibleexoplanets,
       P.simplified
     FROM Star S
     JOIN StarPoints P
-      ON P.starId = S.starId
+      ON P.starid = S.starid
+    WHERE
+      S.starid = ${starId}
     LIMIT 1;
     `).then(results => {
       client.release();
