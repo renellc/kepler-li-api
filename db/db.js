@@ -1,9 +1,9 @@
-const { Pool }  = require('pg');
-const pool = process.env.NODE_ENV === 'PROD' ? 
+const { Pool } = require('pg');
+const pool = process.env.NODE_ENV === 'PROD' ?
   new Pool({
     connectionString: process.env.DATABASE_URL,
     ssl: true
-  }) : 
+  }) :
   new Pool({
     user: 'admin',
     host: 'localhost',
@@ -11,7 +11,15 @@ const pool = process.env.NODE_ENV === 'PROD' ?
     password: process.env.LOCAL_DB_PASS
   });
 
-function getStars(limit, offset, getStarsHandler) {
+/**
+ * Retrives the specified amount of stars from the Stars database.
+ * 
+ * @param {Number}   limit           The amount of stars that will be retrieved from the database.
+ * @param {Number}   offset          The amount to offset the first item from.
+ * @param {Function} getStarsHandler A callback that takes in as its first argument the error, and
+ *                                   it second argument the data retrieved from the database. 
+ */
+const getStars = function (limit, offset, getStarsHandler) {
   pool.connect().then(client => {
     client.query(`SELECT * FROM Star ORDER BY starId ASC LIMIT ${limit} OFFSET ${offset}`).then(results => {
       client.release();
@@ -27,7 +35,14 @@ function getStars(limit, offset, getStarsHandler) {
   });
 }
 
-function getStar(starId, getStarHandler) {
+/**
+ * Gets a specified star from the Stars database.
+ * 
+ * @param {Number}   starId         The id of the star in the database.
+ * @param {Function} getStarHandler A callback that takes in as its first argument the error, and
+ *                                  it second argument the data retrieved from the database. 
+ */
+const getStar = function (starId, getStarHandler) {
   pool.connect().then(client => {
     client.query(`
     SELECT
