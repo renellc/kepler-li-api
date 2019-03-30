@@ -22,7 +22,21 @@ const pool = process.env.NODE_ENV === 'PROD'
  */
 const getStars = function getStarsAmount(limit, offset, getStarsHandler) {
   pool.connect().then((client) => {
-    client.query(`SELECT * FROM Star ORDER BY starId ASC LIMIT ${limit} OFFSET ${offset}`).then((results) => {
+    client.query(`
+    SELECT
+      S.starid,
+      S.min,
+      S.max,
+      S.std,
+      S.haspossibleexoplanets,
+      P.simplified
+    FROM Star S
+    JOIN StarPoints P
+      ON P.starId = S.starId
+    ORDER BY S.starId ASC
+    LIMIT ${limit}
+    OFFSET ${offset}
+    `).then((results) => {
       client.release();
       getStarsHandler(null, results.rows);
     }).catch((queryErr) => {
@@ -52,7 +66,7 @@ const getStar = function getSingleStar(starId, getStarHandler) {
       S.max,
       S.std,
       S.haspossibleexoplanets,
-      P.simplified
+      P.extended
     FROM Star S
     JOIN StarPoints P
       ON P.starid = S.starid
