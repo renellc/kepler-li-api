@@ -20,20 +20,21 @@ const pool = process.env.NODE_ENV === 'PROD'
  * @param {Function} getStarsHandler A callback that takes in as its first argument the error, and
  *                                   it second argument the data retrieved from the database.
  */
-const getStars = function getStarsAmount(limit, offset, getStarsHandler) {
+const getStars = function getStarsAmount(limit, offset, sortBy, getStarsHandler) {
   pool.connect().then((client) => {
     client.query(`
     SELECT
       S.starid,
       S.min,
       S.max,
+      (S.max - S.min) AS range,
       S.std,
       S.haspossibleexoplanets,
       P.simplified
     FROM Star S
     JOIN StarPoints P
       ON P.starId = S.starId
-    ORDER BY S.starId ASC
+    ORDER BY ${sortBy} ${sortBy === 'haspossibleexoplanets' ? 'DESC' : 'ASC'}
     LIMIT ${limit}
     OFFSET ${offset}
     `).then((results) => {

@@ -6,7 +6,7 @@ const app = express();
 const port = process.env.PORT || 4000;
 const starRouter = require('./routes/stars');
 
-app.enable('etag', 'strong');
+app.enable('etag', 'weak');
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());

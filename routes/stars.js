@@ -7,11 +7,12 @@ const pageLimit = 10;
 
 router.get('/', (req, res) => {
   const offset = req.query.offset ? req.query.offset : 0;
-  db.getStars(pageLimit, offset, (err, data) => {
+  const { sort } = req.query;
+  db.getStars(pageLimit, offset, sort, (err, data) => {
     if (err) {
       console.log(err);
       res.setHeader('Content-Type', 'application/json');
-      res.status(404).send(JSON.parse({}));
+      res.sendStatus(404);
     }
     res.send(data);
   });
