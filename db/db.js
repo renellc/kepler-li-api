@@ -13,7 +13,7 @@ const pool = process.env.NODE_ENV === 'PROD'
   });
 
 /**
- * Retrives the specified amount of stars from the Stars database.
+ * Retrieves the specified amount of stars from the Stars database.
  *
  * @param {Number}   limit           The amount of stars that will be retrieved from the database.
  * @param {Number}   offset          The amount to offset the first item from.
@@ -42,11 +42,9 @@ const getStars = function getStarsAmount(limit, offset, sortBy, getStarsHandler)
       getStarsHandler(null, results.rows);
     }).catch((queryErr) => {
       client.release();
-      console.log(queryErr);
       getStarsHandler(queryErr, null);
     });
   }).catch((connectErr) => {
-    console.log(connectErr);
     getStarsHandler(connectErr, null);
   });
 };
@@ -80,11 +78,9 @@ const getStar = function getSingleStar(starId, getStarHandler) {
       getStarHandler(null, results.rows[0]);
     }).catch((queryErr) => {
       client.release();
-      console.log(queryErr);
       getStarHandler(queryErr, null);
     });
   }).catch((connectErr) => {
-    console.log(connectErr);
     getStarHandler(connectErr, null);
   });
 };
