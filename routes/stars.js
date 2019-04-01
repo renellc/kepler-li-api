@@ -5,25 +5,37 @@ const router = express.Router();
 
 const pageLimit = 10;
 
+/**
+ * Gets the queries for the route /api/stars.
+ * @param {Object} query The object containing the query object from a Request of a client.
+ */
+const getQueries = function getQueryParameters(query) {
+  const queries = {
+    sort: query.sort ? query.sort : 'starid',
+    offset: query.offset ? query.offset : 0,
+  };
+
+  return queries;
+};
+
 router.get('/', (req, res) => {
-  const offset = req.query.offset ? req.query.offset : 0;
-  const { sort } = req.query;
-  db.getStars(pageLimit, offset, sort, (err, data) => {
+  const queries = getQueries(req.query);
+  db.getStars(pageLimit, queries.offset, queries.sort, (err, data) => {
     if (err) {
-      console.log(err);
-      res.setHeader('Content-Type', 'application/json');
       res.sendStatus(404);
     }
-    res.send(data);
+    res.setHeader('Content-Type', 'application/json');
+    res.send(JSON.stringify(data));
   });
 });
 
 router.get('/:starId', (req, res) => {
   db.getStar(req.params.starId, (err, data) => {
     if (err || data.length === 0) {
-      res.status(404).send();
+      res.sendStatus(404);
     }
-    res.send(data);
+    res.setHeader('Content-Type', 'application/json');
+    res.send(JSON.parse(data));
   });
 });
 
