@@ -24,13 +24,13 @@ const getStars = function getStarsAmount(limit, offset, sortBy, getStarsHandler)
   pool.connect().then((client) => {
     client.query(`
     SELECT
-      S.starid,
+      S.starid AS starId,
       S.min,
       S.max,
       (S.max - S.min) AS range,
-      S.std,
-      S.haspossibleexoplanets,
-      P.simplified
+      S.std AS stdDeviation,
+      S.haspossibleexoplanets AS hasPossibleExoplanets,
+      P.simplified as simplifiedFluxPoints
     FROM Star S
     JOIN StarPoints P
       ON P.starId = S.starId
@@ -62,12 +62,13 @@ const getStar = function getSingleStar(starId, getStarHandler) {
   pool.connect().then((client) => {
     client.query(`
     SELECT
-      S.starid,
+      S.starid AS starId,
       S.min,
       S.max,
-      S.std,
-      S.haspossibleexoplanets,
-      P.extended
+      (S.max - S.min) AS range,
+      S.std AS stdDeviation,
+      S.haspossibleexoplanets AS hasPossibleExoplanets,
+      P.extended as fluxPoints
     FROM Star S
     JOIN StarPoints P
       ON P.starid = S.starid
@@ -76,7 +77,7 @@ const getStar = function getSingleStar(starId, getStarHandler) {
     LIMIT 1;
     `).then((results) => {
       client.release();
-      getStarHandler(null, results.rows);
+      getStarHandler(null, results.rows[0]);
     }).catch((queryErr) => {
       client.release();
       console.log(queryErr);
