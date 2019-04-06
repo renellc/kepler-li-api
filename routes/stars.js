@@ -33,9 +33,10 @@ router.get('/:starId', (req, res) => {
   db.getStar(req.params.starId, (err, data) => {
     if (err || data.length === 0) {
       res.sendStatus(404);
+      return;
     }
     res.setHeader('Content-Type', 'application/json');
-    res.send(JSON.parse(data));
+    res.send(JSON.stringify(data));
   });
 });
 
